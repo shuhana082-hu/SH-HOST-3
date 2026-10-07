@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SH HOST - Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{--bg:#f7f8fc;--card:#fff;--ink:#0f172a;--mute:#64748b;--line:#e8ebf3;--brand:#4f46e5;--brand2:#7c3aed;--ok:#16a34a;--danger:#e11d48}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,sans-serif;background:var(--bg);color:var(--ink)}
+button{font-family:inherit;cursor:pointer}.hidden{display:none!important}
+.side{position:fixed;left:0;top:0;bottom:0;width:230px;background:#fff;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;padding:0 8px 18px}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font-size:19px}
+.nv{display:flex;gap:10px;align-items:center;border:0;background:transparent;padding:11px 12px;border-radius:11px;font-weight:600;font-size:14px;color:var(--mute);text-align:left}
+.nv:hover{background:#f4f5fb}.nv.on{background:#eef0ff;color:var(--brand)}.nv i{font-size:19px}
+.main{margin-left:230px;padding:28px;max-width:1200px}
+@media(max-width:800px){.side{position:static;width:auto;flex-direction:row;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.brand{display:none}.main{margin:0;padding:16px}.nv span{display:none}}
+h1{margin:0 0 20px;font-size:26px;letter-spacing:-.5px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.st{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.st i{font-size:22px;color:var(--brand);background:#eef0ff;border-radius:10px;padding:8px}.st b{display:block;font-size:26px;margin-top:10px}.st span{color:var(--mute);font-size:13px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border:0}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}.pill.ok{background:#dcfce7;color:var(--ok)}.pill.bad{background:#fee2e2;color:var(--danger)}
+.b{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 11px;font-size:13px;font-weight:600;margin:2px;color:var(--ink)}
+.b:hover{border-color:var(--brand);color:var(--brand)}.b.r:hover{border-color:var(--danger);color:var(--danger)}
+.pr{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:0;border-radius:11px;padding:11px 20px;font-weight:700;font-size:14px}
+select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font:500 14px Inter;background:#fff}
+input,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font:500 14px Inter;background:#fff}
+input:focus,textarea:focus{outline:0;border-color:var(--brand)}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:var(--mute)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:700px){.two{grid-template-columns:1fr}}
+.sw{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;margin-top:14px}.sw input{width:auto;accent-color:var(--brand);width:18px;height:18px}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lbox{background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px;width:100%;max-width:380px;box-shadow:0 30px 60px -20px rgba(15,23,42,.15)}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}.ov.on{display:flex}
+.modal{background:#fff;border-radius:18px;padding:22px;width:100%;max-width:820px}
+#toasts{position:fixed;top:16px;right:16px;z-index:99;display:grid;gap:8px}.toast{background:var(--ok);color:#fff;padding:11px 15px;border-radius:11px;font-size:14px}.toast.err{background:var(--danger)}
+</style>
+</head>
+<body>
+<div id="toasts"></div>
+
+<div class="login {{ 'hidden' if logged else '' }}" id="login">
+  <div class="lbox">
+    <div class="brand" style="padding:0 0 18px"><span class="logo"><i class="ti ti-shield-lock"></i></span>SH HOST Admin</div>
+    <label style="margin-top:0">Username</label><input id="au" autocomplete="username">
+    <label>Password</label><input id="ap" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')alogin()">
+    <button class="pr" style="width:100%;margin-top:20px" onclick="alogin()">Login</button>
+  </div>
+</div>
+
+<div id="panel" class="{{ '' if logged else 'hidden' }}">
+  <div class="side">
+    <div class="brand"><span class="logo"><i class="ti ti-cloud-bolt"></i></span>SH HOST</div>
+    <button class="nv on" data-t="dash"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+    <button class="nv" data-t="users"><i class="ti ti-users"></i><span>Users</span></button>
+    <button class="nv" data-t="projects"><i class="ti ti-world"></i><span>Projects</span></button>
+    <button class="nv" data-t="settings"><i class="ti ti-settings"></i><span>Settings</span></button>
+    <div style="flex:1"></div>
+    <button class="nv" onclick="location.href='/'"><i class="ti ti-home"></i><span>Open site</span></button>
+    <button class="nv" onclick="alogout()"><i class="ti ti-logout"></i><span>Logout</span></button>
+  </div>
+  <div class="main">
+    <div id="v-dash"><h1>Dashboard</h1><div class="stats" id="stats"></div></div>
+    <div id="v-users" class="hidden"><h1>Users</h1><div class="card"><table><thead><tr><th>ID</th><th>Username</th><th>Projects</th><th>Limit</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ub"></tbody></table></div></div>
+    <div id="v-projects" class="hidden"><h1>Projects</h1><div class="card"><table><thead><tr><th>Name</th><th>Owner</th><th>Views</th><th>Status</th><th>Actions</th></tr></thead><tbody id="pb"></tbody></table></div></div>
+    <div id="v-settings" class="hidden"><h1>Settings</h1><div class="card">
+      <div class="two"><div><label style="margin-top:0">Site name</label><input id="s_site_name"></div><div><label style="margin-top:0">Tagline</label><input id="s_tagline"></div></div>
+      <label>Announcement banner (empty = hidden)</label><input id="s_announcement">
+      <div class="two"><div><label>Max projects per user</label><input id="s_max_projects" type="number"></div><div><label>Max file size (KB)</label><input id="s_max_file_kb" type="number"></div></div>
+      <div class="two"><div><label>Max saved versions per site</label><input id="s_max_versions" type="number"></div><div><label>Max GitHub repo size (MB)</label><input id="s_max_repo_mb" type="number"></div></div>
+      <label>Main domain (sites open as <b>name.yourdomain.com</b>)</label><input id="s_base_domain" placeholder="ffx.qd.je">
+      <label>YouTube link</label><input id="s_youtube"><label>Telegram link</label><input id="s_telegram"><label>TikTok link</label><input id="s_tiktok">
+      <div class="sw"><input type="checkbox" id="s_allow_register"><span>Allow new registrations</span></div>
+      <div class="sw"><input type="checkbox" id="s_maintenance"><span>Maintenance mode (blocks user login)</span></div>
+      <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><button class="pr" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Save settings</button><button class="b" onclick="location.href='/admin/api/backup'"><i class="ti ti-download"></i> Download full backup (.zip)</button></div>
+    </div></div>
+  </div>
+</div>
+
+<div class="ov" id="src" onclick="if(event.target===this)this.classList.remove('on')"><div class="modal">
+  <h3 style="margin:0 0 12px">Edit source — <span id="srcn"></span></h3>
+  <textarea id="srct" style="height:55vh;font-family:monospace;font-size:13px"></textarea>
+  <div style="margin-top:14px;display:flex;gap:10px"><button class="pr" onclick="saveSrc()">Save</button><button class="b" onclick="document.getElementById('src').classList.remove('on')">Close</button></div>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const req=async(u,m='GET',b)=>{const r=await fetch(u,{method:m,credentials:'include',headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined});
+  if(r.status===401&&!u.includes('login')){location.reload();return {}}const d=await r.json().catch(()=>({}));if(!r.ok){toast(d.error||'Error',1);throw 0}return d};
+function toast(m,e){const t=document.createElement('div');t.className='toast'+(e?' err':'');t.textContent=m;$('toasts').appendChild(t);setTimeout(()=>t.remove(),3500)}
+async function alogin(){try{await req('/admin/login','POST',{username:$('au').value,password:$('ap').value});location.reload()}catch(e){}}
+async function alogout(){await req('/admin/logout','POST');location.reload()}
+document.querySelectorAll('.nv[data-t]').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+function tab(t){document.querySelectorAll('.nv[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  ['dash','users','projects','settings'].forEach(x=>$('v-'+x).classList.toggle('hidden',x!==t));({dash:stats,users:users,projects:projects,settings:settings})[t]()}
+async function stats(){const s=await req('/admin/api/stats');const c=[['ti-users','Users',s.users],['ti-ban','Banned users',s.banned],['ti-world','Projects',s.projects],['ti-player-pause','Disabled sites',s.disabled],['ti-eye','Total views',s.views],['ti-database','Storage (KB)',s.storage_kb]];
+  $('stats').innerHTML=c.map(x=>`<div class="st"><i class="ti ${x[0]}"></i><b>${x[2]}</b><span>${x[1]}</span></div>`).join('')}
+async function users(){const d=await req('/admin/api/users');$('ub').innerHTML=d.map(u=>`<tr><td>${u.id}</td><td><b>${esc(u.username)}</b></td><td>${u.projects}</td><td>${u.max_projects??'default'}</td>
+  <td><span class="pill ${u.banned?'bad':'ok'}">${u.banned?'BANNED':'ACTIVE'}</span></td>
+  <td><button class="b" onclick="ban(${u.id},${u.banned?0:1})">${u.banned?'Unban':'Ban'}</button><button class="b" onclick="limit(${u.id})">Limit</button><button class="b" onclick="pw(${u.id})">Password</button><button class="b r" onclick="delUser(${u.id})">Delete</button></td></tr>`).join('')||'<tr><td colspan=6>No users</td></tr>'}
+async function ban(id,v){await req('/admin/api/user/'+id,'POST',{banned:v});users()}
+async function limit(id){const v=prompt('Project limit for this user (empty = default):');if(v===null)return;await req('/admin/api/user/'+id,'POST',{max_projects:v});users()}
+async function pw(id){const v=prompt('New password:');if(!v)return;await req('/admin/api/user/'+id,'POST',{password:v});toast('Password changed')}
+async function delUser(id){if(!confirm('Delete user and ALL their sites?'))return;await req('/admin/api/user/'+id,'DELETE');users()}
+async function projects(){const d=await req('/admin/api/projects');$('pb').innerHTML=d.map(p=>`<tr><td><a href="${esc(p.url)}" target="_blank" style="color:var(--brand);font-weight:700;text-decoration:none">${esc(p.name)}</a></td><td>${esc(p.owner)}</td><td>${p.views}</td>
+  <td><span class="pill ${p.disabled?'bad':'ok'}">${p.disabled?'DISABLED':'LIVE'}</span></td>
+  <td><button class="b" onclick="tog(${p.id},${p.disabled?0:1})">${p.disabled?'Enable':'Disable'}</button>${p.repo_url?`<button class="b" onclick="syncP(${p.id})"><i class="ti ti-brand-github"></i> Sync</button>`:''}<button class="b" onclick="ren(${p.id})">Rename</button><button class="b" onclick="editSrc(${p.id},'${esc(p.name)}')">Edit code</button><button class="b r" onclick="delP(${p.id})">Delete</button></td></tr>`).join('')||'<tr><td colspan=5>No projects</td></tr>'}
+async function tog(id,v){await req('/admin/api/project/'+id,'POST',{disabled:v});projects()}
+async function syncP(id){try{await req('/admin/api/project/'+id+'/sync','POST');toast('Synced');projects()}catch(e){}}
+async function ren(id){const v=prompt('New name:');if(!v)return;try{await req('/admin/api/project/'+id,'POST',{rename:v});projects()}catch(e){}}
+async function delP(id){if(!confirm('Delete this project?'))return;await req('/admin/api/project/'+id,'DELETE');projects()}
+let srcId=0;async function editSrc(id,n){srcId=id;$('srcn').textContent=n;$('srct').value=(await req('/admin/api/project/'+id+'/source')).html;$('src').classList.add('on')}
+async function saveSrc(){await req('/admin/api/project/'+srcId+'/source','POST',{html:$('srct').value});toast('Saved');$('src').classList.remove('on')}
+const KEYS=['site_name','tagline','announcement','max_projects','max_file_kb','max_versions','max_repo_mb','base_domain','youtube','telegram','tiktok'],BOOL=['allow_register','maintenance'];
+async function settings(){const s=await req('/admin/api/settings');KEYS.forEach(k=>$('s_'+k).value=s[k]);BOOL.forEach(k=>$('s_'+k).checked=s[k]==='1')}
+async function saveSettings(){const b={};KEYS.forEach(k=>b[k]=$('s_'+k).value);BOOL.forEach(k=>b[k]=$('s_'+k).checked?'1':'0');await req('/admin/api/settings','POST',b);toast('Settings saved')}
+if(!$('panel').classList.contains('hidden'))stats();
+</script>
+</body>
+</html>

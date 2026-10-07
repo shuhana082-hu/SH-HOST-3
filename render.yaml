@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: sh-host
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        sync: false
+      - key: BASE_DOMAIN
+        value: ffx.qd.je
+    # Paid plan only: uncomment for permanent storage (and set plan: starter)
+    # disk:
+    #   name: shhost-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    # and add env var:  DATA_DIR = /var/data
